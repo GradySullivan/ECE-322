@@ -1,0 +1,20 @@
+Ashton Gray
+-add_card
+-search
+-check_add_book
+-game_over
+-reset_player
+-remove_card
+-next_card
+-main
+
+Grady Sullivan
+-shuffle
+-deal_player_cards
+-deck_size
+-transfer_cards
+-computer_play
+-user_play
+-remove_card
+-main
+

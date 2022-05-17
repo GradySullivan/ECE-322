@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Put your code here
+# You may only use the following external programs: ls, echo, awk, cat, grep, sort, wc, bc
+
+
+submissions=$(ls /home/ece373/Desktop/assignment1/ex22/submissions)
+
+
+words=($(<input.txt))
+#echo ${words[@]}
+
+declare -A associative_array
+
+next_check=0
+
+for i in ${!words[@]}
+do
+
+	if [[ "${words[$i]}" =~ [0-9]+([.][0-9]+)?$ ]]
+	
+	
+	then
+		values+=(${words[$i]})
+		next_check=0
+	else
+
+		if ! [[ "${words[`echo "$i+1" | bc`]}" =~ ^[0-9]+([.][0-9]+)?$ ]]
+			then 
+				keywords+=(${words[$i]}" "${words[`echo "$i+1" | bc`]})
+				next_check=1
+			elif [[ $next_check -eq 0 ]]
+			then
+				keywords+=(${words[$i]})
+			else
+				next_check=0
+			fi
+	fi
+done
+
+#echo ${values[@]}
+#echo ${keywords[@]}
+
+for file in $submissions
+do
+	total_points=0
+	for i in ${!keywords[@]}
+	do
+		occur=$(grep -s -o -i "${keywords[$i]}" /home/ece373/Desktop/assignment1/ex22/submissions/$file | wc -l)
+		occur_array[$i]=$occur
+		#echo occured = ${occur_array[$i]}, value = ${values[$i]}
+		points=(`echo ${occur_array[$i]}*${values[$i]} |bc`)
+		total_points=(`echo $total_points+$points |bc`)
+		
+	done
+	
+	#echo Total points 'for' $file is $total_points
+	associative_array["$file"]=$total_points
+
+done
+
+#echo ${associative_array[@]}
+#echo ${!associative_array[@]}
+
+for i in ${!associative_array[@]}
+do
+	echo ${associative_array["$i"]} $i
+done | sort -rn -k 1
+
